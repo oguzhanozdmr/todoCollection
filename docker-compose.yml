@@ -1,0 +1,26 @@
+version: '3.6'
+services:
+  db:
+    image: postgres:14-alpine
+    volumes:
+      - db_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=skydata
+      - POSTGRES_PASSWORD=pvFQMzdN*2Ky
+      - POSTGRES_DB=skyadatabase
+      - POSTGRES_HOST_AUTH_METHOD=md5
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    restart: always
+  # backend:
+  #   build: ./backend
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - "9000:9000"
+  #   restart: always
+  #   environment:
+  #     - DATABASE_URL=postgresql://skydata:pvFQMzdN*2Ky@db:5432/SureBest
+volumes:
+  db_data:
