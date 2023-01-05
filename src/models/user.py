@@ -9,6 +9,7 @@ from werkzeug.security import (check_password_hash,
                                 generate_password_hash)
 from src.extensions import db
 from src.models import StatusType
+from src.utils import create_token
 
 class UserModel(db.Model):
     __tablename__ = "users"
@@ -58,14 +59,15 @@ class UserModel(db.Model):
         self.password_hash = generate_password_hash(password)
 
     def verify_password(self, password):
-        return check_password_hash(self.hash_password, password)
+        return check_password_hash(self.password_hash, password)
 
     def genarete_acces_token(self):
-        ...
+        #TODO: Read Role info
+        return create_token(self.email, name_surname=self.name_surname)
 
     def __repr__(self):
         return f'User<name_username:{self.name_surname},' \
-                f'email: {self.mail}, id:{self.id}>'
+                f'email: {self.email}, id:{self.id}>'
 
     @classmethod
     def search_by_name_name_or_email(cls,
