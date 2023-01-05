@@ -3,11 +3,11 @@
 #!/usr/bin/env python
 
 from flask import Blueprint, request, jsonify
-from marshmallow import ValidationError, INCLUDE
+
 
 from src.black_list import BLACK_LIST
-from src.utils import authorize, error_as_json
-from src.schemas import user_register_schema
+from src.utils import authorize, validate_json_body
+from src.schemas import user_register_schema, user_login_schema
 from src.models import HttpType
 from src.models.user import UserModel
 
@@ -15,23 +15,17 @@ auth_blueprint = Blueprint('auth', __name__, url_prefix='/auth')
 
 
 @auth_blueprint.route('/register', methods=['POST'])
+@validate_json_body(user_register_schema)
 def register(data):
     """user register"""
-    json_data = request.get_json(force=True)
-
-    try:
-        data = user_register_schema.load(json_data, unknown=INCLUDE)
-    except ValidationError as ex:
-        return error_as_json(msg='Unvalid json body.',
-                             exception_type=ex,
-                             detail=ex.messages), HttpType.NOT_VALIDATE_JSON_BODY.value
     user = UserModel(
         email=data['email'],
         name_surname=data['name_surname'],
         password=data['password']
     )
-    user.save_to_db()
+    # user.save_to_db()
     # TODO: DB error handling
+    # TODO: Kullanici zaten var uyarisi
     return jsonify({
         'status': 'Success',
         'mesage': 'Your account has been successfully created.'
@@ -39,14 +33,29 @@ def register(data):
 
 
 @auth_blueprint.route('/login', methods=['POST'])
-def login():
+@validate_json_body(user_login_schema)
+def login(data):
     """user login"""
-    json_data = request.get_json(force=True)
+    user = UserModel.find_by_email(data['email'])
+    #TODO: User olmamasini kontrol et
+    if user.verify_password(data['password']):
+        return jsonify({
+            'status': 'Success',
+            'message': 'Login is succesfuly',
+            'token': user.genarete_acces_token()
+        }), HttpType.OK.value
+        #TODO: oath kullanbilir access ve refresh token donebilir.
+        ... #return access succes
+    return jsonify({
+            'status': 'Unsuccessful',
+            'message': 'Email or password wrong!',
+        }), HttpType.OK.BAD_REQUEST
+    # return access false
 
 
 @auth_blueprint.route('/logout', methods=['POST'])
 @authorize
-def logout():
+def logout(user_info: dict=None):
     """user logout"""
     BLACK_LIST.add()
     ...
