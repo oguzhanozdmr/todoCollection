@@ -3,9 +3,12 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 
+from src.models.user import UserModel
 from marshmallow import (fields,
                          validate,
-                         Schema)
+                         Schema,
+                         ValidationError,
+                         validates)
 
 
 class UserLogin(Schema):
@@ -33,3 +36,11 @@ class UserRegister(UserLogin):
             error="name_surname must be minimum 3 and max 100 characters"
         ),
     )
+
+    @validates('email')
+    def validate_email(self, value):
+        if not value:
+            raise ValidationError('email is required')
+        user = UserModel.find_by_email(value)
+        if user:
+            raise ValidationError('This email address is already in use')

@@ -41,6 +41,8 @@ class UserModel(db.Model):
         db.DateTime,
         server_default=db.func.now()
     )
+    task = db.relationship('TodoModel', backref='users')
+    
     #TODO: perfomans icin name_username ve mailin adresinin indexlenmesi
     def __init__(self,
                 email: str,
@@ -62,12 +64,11 @@ class UserModel(db.Model):
         return check_password_hash(self.password_hash, password)
 
     def genarete_acces_token(self):
-        #TODO: Read Role info
-        return create_token(self.email, name_surname=self.name_surname)
-
-    def __repr__(self):
-        return f'User<name_username:{self.name_surname},' \
-                f'email: {self.email}, id:{self.id}>'
+        return create_token(
+            self.email,
+            name_surname=self.name_surname,
+            id=self.id
+        )
 
     @classmethod
     def search_by_name_name_or_email(cls,
@@ -84,16 +85,13 @@ class UserModel(db.Model):
         return cls.query.filter_by(status=StatusType.ACTIVE,
                                     email=email).first()
 
-    @classmethod
-    def find_by_all(cls) -> List['UserModel']:
-        return cls.query.filter_by(status=StatusType.ACTIVE).all()
 
     def save_to_db(self) -> None:
         db.session.add(self)
         db.session.commit()
-
-    def delete_from_db(self) -> None:
-        db.session.delete(self)
-        db.session.commit()
+    
+    def __repr__(self):
+        return f'User<name_username:{self.name_surname},' \
+                f'email: {self.email}, id:{self.id}>'
 
     #sqlalchemy ekstra guvenlik icin validates kullanilabilir.
