@@ -1,5 +1,7 @@
-#TODO List
+Nasil calisir.
+Calistirmak icin sadece docker-compose up yapmak yeterlidir.
 
+#TODO List
 [ ] Unittest gelistirilmesi
 
 [ ] oAuth2 kullanilmasi
