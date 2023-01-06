@@ -41,3 +41,5 @@ Calistirmak icin sadece docker-compose up yapmak yeterlidir.
 [ ] query parements olarak siralama yapma filtereleme ozelligi eklenebilir.
 
 [ ] wsgi kullanimi
+
+[ ] db'in read ve write olarak reparete edilmesi
