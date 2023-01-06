@@ -7,13 +7,13 @@ from src.utils import error_as_json
 from src.extensions import db
 
 __all__ = ['create_app']
-__author__ = "Oguzhan Ozdemir"
 
+__author__ = "Oguzhan Ozdemir"
 
 def create_app() -> Flask: 
     app = Flask(__name__)
     app.secret_key = environ.get('SECRET_KEY')
-    app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL')
+    app.config['SQLALCHEMY_DATABASE_URI'] = str(environ.get('DATABASE_URL'))
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
     
     db.init_app(app)

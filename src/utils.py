@@ -114,10 +114,10 @@ def error_as_json(msg: str,
     _msg = {
         'status': 'Error',
         'message': msg,
+        'detail' : detail
     } | kwargs
 
     if bool(environ.get('DEBUG')):
-        _msg['detail'] = detail
         if exception_type:
             _msg['type'] = exception_type.__class__.__name__
         _msg['code'] = get_caller_path(inspect.stack()[1]) if not func_path else func_path

@@ -51,7 +51,7 @@ def login(data: dict):
 
 @auth_blueprint.route('/logout', methods=['POST'])
 @authorized()
-def logout(current_user):
+def logout(**kwargs):
     """user logout"""
     authorization_data = request.headers.get('Authorization', '')
     token = str.replace(str(authorization_data), 'Bearer ', '')
@@ -60,12 +60,3 @@ def logout(current_user):
         'status': 'Success',
         'message': 'Logout is succesfuly',
     })
-
-
-@auth_blueprint.route('/me', methods=['GET'])
-@authorized()
-def me(current_user):
-    """get me info"""
-    return jsonify({
-        'status': 'Success',
-    } | current_user)

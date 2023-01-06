@@ -12,9 +12,7 @@ from src.decorators import authorized, validate_json_body
 to_do_blueprint = Blueprint('to_do', __name__, url_prefix='/todos')
 
 
-# POST Create a new todo record
 # GET Fetch a random todo record
-# PUT Edit existing todo record
 DOMAIN = 'http://localhost:8080'
 
 @to_do_blueprint.route('/', methods=['GET'])
@@ -48,12 +46,21 @@ def list_task(**kwargs):
         "page_count": todo_list.pages,
         "total_count": todo_list.total
     })
-    
+
+@to_do_blueprint.route('/random', methods=['GET'])
+@authorized()
+def random_task(**kwargs):
+    current_user = kwargs.get('current_user')
+    todo = TodoModel.find_by_random(user_id=current_user.id)
+    return jsonify(to_do_schema.dump(todo))
+
 @to_do_blueprint.route('/<int:todo_id>', methods=['GET'])
 @authorized()
 def find_by_id_task(todo_id: int, **kwargs):
     current_user = kwargs.get('current_user')
     todo = TodoModel.find_by_id(id=todo_id, user_id=current_user.id)
+    if not todo:
+        return jsonify({'msg': 'task not found'}), 404
     return jsonify(to_do_schema.dump(todo))
 
 @to_do_blueprint.route('/<int:todo_id>', methods=['DELETE'])
@@ -72,6 +79,7 @@ def update_task(todo_id: int, **kwargs):
     data = kwargs.get('data')
 
     todo = TodoModel.find_by_id(id=todo_id, user_id=current_user.id)
+    #TODO: Yoksa hata don
     todo.heading = data.get('heading')
     todo.description = data.get('description')
     todo.save_to_db()

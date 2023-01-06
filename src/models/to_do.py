@@ -71,10 +71,17 @@ class TodoModel(db.Model):
         ).paginate(page=page, per_page=per_page)
 
     @classmethod
-    def find_by_id(cls, id: int, user_id) -> 'TodoModel':
+    def find_by_id(cls, id: int, user_id: int) -> 'TodoModel':
         return cls.query.filter_by(status=StatusType.ACTIVE,
                                    created_by=user_id,
                                    id=id).first()
+
+    @classmethod
+    def find_by_random(cls, user_id: int) -> 'TodoModel':
+        return cls.query.filter_by(
+            status=StatusType.ACTIVE,
+            created_by=user_id
+        ).order_by(db.func.random()).first()
 
     def save_to_db(self) -> None:
         now = datetime.datetime.utcnow()

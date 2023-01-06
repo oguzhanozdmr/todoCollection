@@ -14,8 +14,9 @@
 [ ] Loglama Handler gelistirilmesi
 [ ] I18n cok dil destegi verilmesi
 [ ] Error Handler yapilmasi
-[ ] Websocket atanmis gorevler icin bildirim verilmesi veya server belirli surele atilan isteklere okunabilir
+[ ] Websocket atanmis gorevler icin bildirim verilmesi veya server belirli surele atilan isteklerlede okunabilir
 [ ] Is basligi ve icerinde elasticsearch ile arama yapabilmesi
 [ ] grafana veya prometheus gibi monitoring kullanilmasi
 [ ] CI/CD yapilmasi (workflow, jenkins, travis vb)
 [ ] query parements olarak siralama yapma filtereleme ozelligi eklenebilir.
+[ ] wsgi kullanimi

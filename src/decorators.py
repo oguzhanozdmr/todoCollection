@@ -88,7 +88,7 @@ class validate_json_body():
                     msg='Unvalid json body.',
                     exception_type=ex,
                     detail=ex.messages,
-                    func_path=self._caller_path(fn.__name__)
+                    func_path=caller_path(self.caller_path, fn.__name__)
                 ), HttpType.NOT_VALIDATE_JSON_BODY.value
             return fn(data=data, *args, **kwargs)
         return validate
